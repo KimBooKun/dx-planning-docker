@@ -15,7 +15,7 @@ fi
 # SSH 로그인 세션은 컨테이너 ENV 를 물려받지 않는다 (sshd 가 환경을 새로 만든다).
 # 그래서 이미지에 박아둔 UV_*/XLA_* 를 PAM(/etc/environment)과 로그인셸(/etc/profile.d)
 # 양쪽에 심어, ssh 로 들어와도 그대로 보이게 한다.
-tr '\0' '\n' < /proc/self/environ | grep -E "^(UV_|XLA_)" > /tmp/dx-env
+printenv | grep -E "^(UV_|XLA_)" > /tmp/dx-env || true
 grep -qxFf /tmp/dx-env /etc/environment 2>/dev/null || cat /tmp/dx-env >> /etc/environment
 { echo '#!/bin/sh'; sed 's/^/export /' /tmp/dx-env; } > /etc/profile.d/dx-env.sh
 chmod +x /etc/profile.d/dx-env.sh
